@@ -1,0 +1,258 @@
+<!-- Gabriel de Oliveira Silva 3ºA-->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Gabriel de Oliveira Silva">
+    <title>Gabriel de Oliveira Silva</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #caf;
+        }
+
+        .campo {
+            place-content: center;
+            position: relative;
+            background-color: #fff;
+            min-height: 400px;
+            border-radius: 10px;
+            padding: 20px;
+            padding-top: 40px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.26);
+            overflow: hidden;
+        }
+
+        .campo::before {
+            content: "🔴🟡🟢";
+            color: white;
+            display: flex;
+            position: absolute;
+            left: 0;
+            top: 0;
+            align-items: center;
+            justify-content: center;
+            height: 30px;
+            width: 100px;
+            background-color: #a4a;
+            border-top-left-radius: 10px;
+        }
+        .campo::after{
+            content: "Gabriel de Oliveira Silva";
+            display: flex;
+            place-content: center;
+            align-items: center;
+            color: white;
+            position: absolute;
+            text-align: center;
+            right: 0;
+            bottom: 32px;
+            width: 250px;
+            margin-right: -43px;
+            height: 30px;
+            background-color: #a4a;
+            transform: rotate(-30deg);
+
+        }
+
+        .campo form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .campo p,
+        .campo label {
+            font-family: monospace;
+            font-size: 2em;
+        }
+
+        input[type='number'],
+        input[type='text'] {
+
+            padding: 5px;
+            font-size: 1.2rem;
+        }
+
+        #inputNumero {
+            max-width: 100px;
+
+        }
+
+        #textoGerado {
+            text-align: center;
+
+            min-height: 70px;
+            padding: 10px;
+
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="campo">
+
+        <form id="formCifra">
+            <label for="inputNumero">Cifre mensagens com o algorítmo de Cesar</label>
+
+            <label>Selecione o numero: <input type="number" id="inputNumero" min="1"></label>
+            <label for="check"><input type="checkbox" id="check"> Descriptografar</label>
+            <label>Insira a mensagem: <input type="text" id="inputMensagem"></label>
+        </form>
+        <div id="textoGerado">
+            <p></p>
+        </div>
+
+    </div>
+
+    <script src="https://kit.fontawesome.com/93db23c8eb.js" crossorigin="anonymous"></script>
+    <script>
+
+
+
+        const checkbox = document.getElementById("check");
+
+
+
+
+        const alfabeto = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+
+        const resultadoInput = document.getElementById("textoGerado")
+
+        let numeroCampo = document.getElementById("inputNumero")
+
+        let mensagemCampo = document.getElementById("inputMensagem")
+
+        const criptografa = () => {
+            let resultado = ""
+
+            let mensagem = [...mensagemCampo.value.toLowerCase()]
+
+            for (let i = 0; i < +mensagem.length; i++) {
+
+                if (mensagem[i] == " ") {
+                    resultado += " "
+                    continue
+                }
+                if (alfabeto.indexOf(mensagem[i]) + +numeroCampo.value > alfabeto.length - 1) {
+                    console.log("foi maior")
+                    let soma = alfabeto.indexOf(mensagem[i]) + +numeroCampo.value
+
+
+                    let saldo = soma - alfabeto.length
+
+                    resultado += alfabeto[saldo]
+                } else {
+                    resultado += alfabeto[alfabeto.indexOf(mensagem[i]) + +numeroCampo.value]
+
+                }
+            }
+
+            resultadoInput.innerHTML = `<p>${resultado}</p>`
+
+
+        }
+
+        const descriptografa = () => {
+            let resultado = ""
+
+            let mensagem = [...mensagemCampo.value.toLowerCase()]
+
+            for (let i = 0; i < +mensagem.length; i++) {
+
+                if (mensagem[i] == " ") {
+                    resultado += " "
+                    continue
+                }
+                if (alfabeto.indexOf(mensagem[i]) - +numeroCampo.value < 0) {
+                    console.log("foi menor")
+                    let diferenca = alfabeto.indexOf(mensagem[i]) - +numeroCampo.value
+
+                    console.log(diferenca)
+
+
+
+                    let saldo = alfabeto.length - (diferenca * -1);
+
+                    resultado += alfabeto[saldo]
+
+
+                } else {
+                    resultado += alfabeto[alfabeto.indexOf(mensagem[i]) - +numeroCampo.value]
+
+                }
+            }
+
+            resultadoInput.innerHTML = `<p>${resultado}</p>`
+
+
+        }
+
+        mensagemCampo.disabled = true
+
+
+        const toggleInput = () => {
+            if (numeroCampo.value) {
+                mensagemCampo.disabled = false
+            } else {
+
+                resultadoInput.innerText = ''
+                mensagemCampo.disabled = true
+            }
+
+            criptografa()
+
+        }
+
+
+
+        checkbox.addEventListener("change", function () {
+
+            mensagemCampo.value = resultadoInput.innerText
+
+            if (!this.checked) {
+
+                criptografa();
+                return
+            }
+
+            descriptografa();
+
+
+        })
+
+
+
+        numeroCampo.addEventListener("input", toggleInput)
+        mensagemCampo.addEventListener("input", () => {
+            if (checkbox.checked)
+                descriptografa();
+            else
+                criptografa();
+        })
+
+
+    </script>
+</body>
+
+</html>
