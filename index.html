@@ -115,7 +115,7 @@
         <form id="formCifra">
             <label for="inputNumero">Cifre mensagens com o algorítmo de Cesar</label>
 
-            <label>Selecione o numero: <input type="number" id="inputNumero" min="1" max="25"></label>
+            <label>Selecione o numero: <input type="number" id="inputNumero" min="1"></label>
             <label for="check"><input type="checkbox" id="check"> Descriptografar</label>
             <label>Insira a mensagem: <input type="text" id="inputMensagem"></label>
         </form>
@@ -125,84 +125,73 @@
 
     </div>
 
+    <script src="https://kit.fontawesome.com/93db23c8eb.js" crossorigin="anonymous"></script>
     <script>
 
 
 
         const checkbox = document.getElementById("check");
+        const mensagemCampo = document.getElementById("inputMensagem")
+
+        const resultadoInput = document.getElementById("textoGerado");
+
+        const numeroCampo = document.getElementById("inputNumero");
 
 
+        
 
+        const encrypt = {
+            criptografa(){
+                let resultado = " "
 
-        const alfabeto = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
-
-        const resultadoInput = document.getElementById("textoGerado")
-
-        let numeroCampo = document.getElementById("inputNumero")
-
-        let mensagemCampo = document.getElementById("inputMensagem")
-
-        const criptografa = () => {
-            let resultado = ""
-
-            let mensagem = [...mensagemCampo.value.toLowerCase()]
-
-            for (let i = 0; i < +mensagem.length; i++) {
-
-                if (mensagem[i] == " ") {
-                    resultado += " "
-                    continue
+                let mensagem = mensagemCampo.value.toLowerCase()
+                
+                for(letra of mensagem){
+                    if(letra == " "){
+                        resultado += " "
+                        continue
+                    }
+                    if((letra.charCodeAt(0) + +numeroCampo.value) > 122){
+                        resultado += String.fromCharCode(letra.charCodeAt(0) + +numeroCampo.value - 26);
+                        continue
+                    }
+                    resultado += String.fromCharCode(letra.charCodeAt(0) + +numeroCampo.value)
                 }
-                if (alfabeto.indexOf(mensagem[i]) + +numeroCampo.value > alfabeto.length - 1) {
-                    let soma = alfabeto.indexOf(mensagem[i]) + +numeroCampo.value
+                resultadoInput.innerHTML = `<p>${resultado}</p>`
+
+            },
 
 
-                    let saldo = soma - alfabeto.length
+            descriptografa(){
+                let resultado = ""
 
-                    resultado += alfabeto[saldo]
-                } else {
-                    resultado += alfabeto[alfabeto.indexOf(mensagem[i]) + +numeroCampo.value]
+                let mensagem = mensagemCampo.value.toLowerCase()
+
+                for(letra of mensagem){
+                    if(letra == " "){
+                        resultado += " "
+                        continue
+                    }
+
+                    if((letra.charCodeAt(0) - +numeroCampo.value) < 97){
+                        resultado += String.fromCharCode(letra.charCodeAt(0) - +numeroCampo.value + 26);
+                        continue
+                    }
+                    
+
+                    resultado += String.fromCharCode(letra.charCodeAt(0) - +numeroCampo.value)
+
+
 
                 }
+                resultadoInput.innerHTML = `<p>${resultado}</p>`
+                
             }
-
-            resultadoInput.innerHTML = `<p>${resultado}</p>`
-
-
         }
 
-        const descriptografa = () => {
-            let resultado = ""
+        
 
-            let mensagem = [...mensagemCampo.value.toLowerCase()]
-
-            for (let i = 0; i < +mensagem.length; i++) {
-
-                if (mensagem[i] == " ") {
-                    resultado += " "
-                    continue
-                }
-                if (alfabeto.indexOf(mensagem[i]) - +numeroCampo.value < 0) {
-                    let diferenca = alfabeto.indexOf(mensagem[i]) - +numeroCampo.value
-
-
-
-
-                    let saldo = alfabeto.length - (diferenca * -1);
-
-                    resultado += alfabeto[saldo]
-
-
-                } else {
-                    resultado += alfabeto[alfabeto.indexOf(mensagem[i]) - +numeroCampo.value]
-
-                }
-            }
-
-            resultadoInput.innerHTML = `<p>${resultado}</p>`
-
-
-        }
+        
 
         mensagemCampo.disabled = true
 
@@ -216,7 +205,7 @@
                 mensagemCampo.disabled = true
             }
 
-            criptografa()
+            encrypt.criptografa()
 
         }
 
@@ -228,23 +217,22 @@
 
             if (!this.checked) {
 
-                criptografa();
+                encrypt.criptografa();
                 return
             }
 
-            descriptografa();
-
-
+            encrypt.descriptografa();
         })
 
 
 
         numeroCampo.addEventListener("input", toggleInput)
+
         mensagemCampo.addEventListener("input", () => {
             if (checkbox.checked)
-                descriptografa();
+                encrypt.descriptografa();
             else
-                criptografa();
+                encrypt.criptografa();
         })
 
 
